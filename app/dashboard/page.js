@@ -162,8 +162,8 @@ export default function Dashboard() {
         </div>
         <div style={{ padding:'0 20px', display:'flex', flexDirection:'column', gap:9 }}>
           {habits.map(h => (
-            <div key={h.id} style={{ background:'var(--surface)', borderRadius:14, padding:'13px 14px', display:'flex', alignItems:'center', gap:12, boxShadow:'0 1px 2px rgba(25,27,40,.06)' }}>
-              <button onClick={() => toggleHabit(h)}
+            <div key={h.id} onClick={() => toggleHabit(h)} style={{ background:'var(--surface)', borderRadius:14, padding:'13px 14px', display:'flex', alignItems:'center', gap:12, boxShadow:'0 1px 2px rgba(25,27,40,.06)', cursor:'pointer', WebkitTapHighlightColor:'transparent' }}>
+              <button onClick={e => { e.stopPropagation(); toggleHabit(h) }}
                 style={{ width:26, height:26, borderRadius:'50%', border:`2px solid ${h.done_today ? 'var(--teal)' : 'var(--border)'}`, cursor:'pointer', background: h.done_today ? 'var(--teal)' : 'none', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, color: h.done_today ? 'white' : 'transparent', fontSize:12 }}>
                 {h.done_today ? '✓' : ''}
               </button>
