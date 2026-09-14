@@ -171,8 +171,8 @@ export default function Dashboard() {
                 <div style={{ fontSize:14, fontWeight:500 }}>{h.name}</div>
                 <div style={{ fontSize:12, color:'var(--text-3)', marginTop:1 }}>{h.streak > 0 ? <><b style={{color:'var(--accent)'}}>{h.streak} day{h.streak>1?'s':''}</b> streak</> : 'Starting today'}</div>
               </div>
-              <div style={{ fontSize:10, fontWeight:700, padding:'3px 9px', borderRadius:20, background: h.badge==='start'?'var(--teal-bg)':h.badge==='reduce'?'var(--rose-bg)':'var(--accent-bg)', color: h.badge==='start'?'var(--teal)':h.badge==='reduce'?'var(--rose)':'var(--accent)' }}>
-                {h.badge.charAt(0).toUpperCase()+h.badge.slice(1)}
+              <div style={{ fontSize:10, fontWeight:700, padding:'3px 9px', borderRadius:20, background: h.done_today?'var(--teal-bg)':h.badge==='start'?'var(--teal-bg)':h.badge==='reduce'?'var(--rose-bg)':'var(--accent-bg)', color: h.done_today?'var(--teal)':h.badge==='start'?'var(--teal)':h.badge==='reduce'?'var(--rose)':'var(--accent)' }}>
+                {h.done_today ? 'Done ✓' : h.badge.charAt(0).toUpperCase()+h.badge.slice(1)}
               </div>
             </div>
           ))}
