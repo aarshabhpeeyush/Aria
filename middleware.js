@@ -1,40 +1,22 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 
-export async function middleware(request) {
-  let supabaseResponse = NextResponse.next({ request })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        getAll() { return request.cookies.getAll() },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  const { data: { user } } = await supabase.auth.getUser()
+export function middleware(request) {
   const { pathname } = request.nextUrl
-
   const publicPaths = ['/login', '/signup']
   const isPublic = publicPaths.some(p => pathname.startsWith(p))
 
-  if (!user && !isPublic) {
+  // Check for Supabase session cookie (set by the auth client on login)
+  const cookies = request.cookies.getAll()
+  const hasSession = cookies.some(c => c.name.startsWith('sb-') && c.name.includes('-auth-token'))
+
+  if (!hasSession && !isPublic) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
-  if (user && isPublic) {
+  if (hasSession && isPublic) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  return supabaseResponse
+  return NextResponse.next()
 }
 
 export const config = {
