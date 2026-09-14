@@ -22,15 +22,17 @@ export default function Dashboard() {
     if (!user) { router.push('/login'); return }
     setUser(user)
 
-    const [{ data: prof }, { data: hab }, { data: met }] = await Promise.all([
+    const [{ data: prof }, { data: hab }, { data: met }, { data: logs }] = await Promise.all([
       supabase.from('profiles').select('*').eq('user_id', user.id).single(),
       supabase.from('habits').select('*').eq('user_id', user.id).order('created_at'),
       supabase.from('daily_metrics').select('*').eq('user_id', user.id).eq('date', todayStr()).single(),
+      supabase.from('habit_logs').select('habit_id').eq('user_id', user.id).eq('completed_date', todayStr()),
     ])
 
     if (!prof) { router.push('/onboarding'); return }
     setProfile(prof)
-    setHabits(hab || [])
+    const completedToday = new Set((logs || []).map(l => l.habit_id))
+    setHabits((hab || []).map(h => ({ ...h, done_today: completedToday.has(h.id) })))
     setMetrics(met || { steps:0, water:0, sleep_hours:0, breakfast:false, lunch:false, dinner:false })
 
     // Load insight

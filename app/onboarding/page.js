@@ -79,7 +79,7 @@ export default function Onboarding() {
     await supabase.from('profiles').upsert({ user_id: user.id, ...data, start_date: today })
     const habits = makeHabits(data.goal)
     await supabase.from('habits').delete().eq('user_id', user.id)
-    await supabase.from('habits').insert(habits.map(h => ({ ...h, user_id: user.id, streak: 0, done_today: false })))
+    await supabase.from('habits').insert(habits.map(h => ({ ...h, user_id: user.id, streak: 0 })))
     router.push('/dashboard')
   }
 
