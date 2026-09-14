@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #F5F2ED;
+  --surface: #FFFFFF;
+  --surface-2: #EDEAE3;
+  --accent: #C1711C;
+  --accent-bg: #F7EDD8;
+  --teal: #2A9B8C;
+  --teal-bg: #D8EFE9;
+  --rose: #BE4E46;
+  --rose-bg: #F9E6E4;
+  --text: #191B28;
+  --text-2: #565E72;
+  --text-3: #969DB0;
+  --border: #E3DFDA;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12141F;
+    --surface: #1A1D2C;
+    --surface-2: #222538;
+    --accent: #E07F28;
+    --accent-bg: #2A1B09;
+    --teal: #33B2A2;
+    --teal-bg: #0E2421;
+    --rose: #DC5850;
+    --rose-bg: #281110;
+    --text: #E8E5DC;
+    --text-2: #8E95A8;
+    --text-3: #565E72;
+    --border: #282B3E;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  min-height: 100dvh;
+}
+
+.app-shell {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--bg);
+  position: relative;
+}
+
+@media (min-width: 480px) {
+  body { background: var(--surface-2); }
+  .app-shell {
+    box-shadow: 0 0 0 1px var(--border), 0 8px 40px rgba(25,27,40,.12);
+  }
+}
