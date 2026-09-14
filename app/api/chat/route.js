@@ -10,11 +10,37 @@ export async function POST(req) {
 
   const { messages, profile, metrics } = await req.json()
 
+  // Fetch past week of metrics and habit streaks for memory context
+  const [{ data: weekMetrics }, { data: habits }] = await Promise.all([
+    supabase.from('daily_metrics').select('date,steps,water,sleep_hours,breakfast,lunch,dinner')
+      .eq('user_id', user.id).order('date', { ascending: false }).limit(7),
+    supabase.from('habits').select('name,streak,badge').eq('user_id', user.id),
+  ])
+
+  const weekSummary = (weekMetrics || []).slice(1).map(d => {
+    const meals = [d.breakfast, d.lunch, d.dinner].filter(Boolean).length
+    return `${d.date}: ${d.steps} steps, ${d.water}/8 water, ${d.sleep_hours}h sleep, ${meals}/3 meals`
+  }).join('\n')
+
+  const habitSummary = (habits || []).map(h =>
+    `"${h.name}" — ${h.streak} day streak`
+  ).join(', ')
+
   const systemPrompt = profile
-    ? `You are Aria, a warm and knowledgeable personal health coach helping ${profile.name}.
-PROFILE: goal="${profile.goal}", diet="${profile.diet}", usual sleep="${profile.sleep}", activity="${profile.activity}"${profile.conditions && profile.conditions.toLowerCase() !== 'none' ? `, notes="${profile.conditions}"` : ''}
-TODAY: steps=${metrics?.steps || 0}, water=${metrics?.water || 0}/8 glasses, sleep=${metrics?.sleep_hours || 0}h
-STYLE: Under 100 words unless asked for a plan. Warm and specific like a knowledgeable friend. Actionable, not preachy. Celebrate small wins. Age-appropriate and encouraging. One follow-up question when helpful.`
+    ? `You are Aria, a warm and knowledgeable personal health coach with memory of ${profile.name}'s journey.
+
+PROFILE: goal="${profile.goal}", diet="${profile.diet}", usual sleep="${profile.sleep}", activity level="${profile.activity}"${profile.conditions && profile.conditions.toLowerCase() !== 'none' ? `, health notes="${profile.conditions}"` : ''}
+
+TODAY (${new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}): steps=${metrics?.steps || 0}, water=${metrics?.water || 0}/8 glasses, sleep=${metrics?.sleep_hours || 0}h, meals=${[metrics?.breakfast, metrics?.lunch, metrics?.dinner].filter(Boolean).length}/3
+
+PAST WEEK:
+${weekSummary || 'No data yet — this is their first week.'}
+
+HABITS: ${habitSummary || 'No habits set yet.'}
+
+MEMORY: You have the full conversation history above. Reference past conversations naturally — if they mentioned something before, you remember it. Notice patterns across the week (e.g. consistent low sleep, skipped water days) and bring them up when relevant.
+
+STYLE: Under 100 words unless asked for a plan. Warm and specific like a knowledgeable friend. Actionable, not preachy. Celebrate streaks and progress. One follow-up question when helpful.`
     : `You are Aria, a warm personal health coach. Keep responses under 100 words unless asked for a plan. Be warm, specific, never preachy.`
 
   const encoder = new TextEncoder()
