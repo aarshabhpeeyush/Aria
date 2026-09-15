@@ -128,7 +128,27 @@ export default function Onboarding() {
     setSaving(true)
     const { data: { user } } = await supabase.auth.getUser()
     const today = new Date().toISOString().split('T')[0]
-    await supabase.from('profiles').upsert({ user_id: user.id, ...data, age_location: data.age_location || '', start_date: today })
+
+    const { error } = await supabase.from('profiles').upsert({
+      user_id: user.id,
+      name: data.name,
+      goal: data.goal,
+      diet: data.diet,
+      sleep_hours: data.sleep,
+      activity_level: data.activity,
+      conditions: data.conditions,
+      age_location: data.age_location || '',
+      start_date: today,
+      onboarded: true,
+    })
+
+    if (error) {
+      console.error('Profile save error:', error)
+      alert('Something went wrong saving your profile: ' + error.message)
+      setSaving(false)
+      return
+    }
+
     const habits = makeHabits(data.goal)
     await supabase.from('habits').delete().eq('user_id', user.id)
     await supabase.from('habits').insert(habits.map(h => ({ ...h, user_id: user.id, streak: 0 })))
