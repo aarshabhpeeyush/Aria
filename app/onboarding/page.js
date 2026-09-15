@@ -150,7 +150,7 @@ export default function Onboarding() {
       age_location: data.age_location || '',
       start_date: today,
       onboarded: true,
-    })
+    }, { onConflict: 'user_id' })
 
     if (error) {
       console.error('Profile save error:', error)
