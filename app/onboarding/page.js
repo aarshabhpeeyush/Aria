@@ -144,6 +144,7 @@ export default function Onboarding() {
       diet: data.diet,
       sleep: data.sleep,
       sleep_hours: data.sleep,
+      activity: data.activity,
       activity_level: data.activity,
       conditions: data.conditions,
       age_location: data.age_location || '',
