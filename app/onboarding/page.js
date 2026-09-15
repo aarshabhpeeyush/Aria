@@ -142,6 +142,7 @@ export default function Onboarding() {
       name: data.name,
       goal: data.goal,
       diet: data.diet,
+      sleep: data.sleep,
       sleep_hours: data.sleep,
       activity_level: data.activity,
       conditions: data.conditions,
