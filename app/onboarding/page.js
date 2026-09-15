@@ -74,10 +74,13 @@ export default function Onboarding() {
         ))}
       </div>
 
-      <div style={{ background:'rgba(193,113,28,0.08)', border:'1.5px solid rgba(193,113,28,0.2)', borderRadius:14, padding:'14px 16px', marginBottom:24 }}>
-        <div style={{ fontSize:13, fontWeight:600, color:'var(--accent)', marginBottom:5 }}>📋 About the setup questions</div>
-        <p style={{ margin:0, fontSize:13, color:'var(--text-2)', lineHeight:1.6 }}>
-          Aria will ask you <strong style={{ color:'var(--text)' }}>7 quick questions</strong> — your name, age, health goal, diet, sleep, activity level, and any conditions or allergies. This is how Aria personalises everything: your daily score, habits, coach replies, and insights. Takes under 2 minutes.
+      <div style={{ background:'var(--surface)', borderRadius:'16px 16px 16px 4px', padding:'14px 16px', marginBottom:24, boxShadow:'0 2px 8px rgba(25,27,40,.08)' }}>
+        <div style={{ fontSize:10, fontWeight:700, letterSpacing:'.08em', textTransform:'uppercase', color:'var(--accent)', marginBottom:6 }}>Aria</div>
+        <p style={{ margin:0, fontSize:14, lineHeight:1.65, color:'var(--text)' }}>
+          Before I start coaching you, I want to get to know you better. I'll ask you <strong>7 short questions</strong> about your health, lifestyle, and goals — it takes under 2 minutes and everything you share stays private. 🔒
+        </p>
+        <p style={{ margin:'10px 0 0', fontSize:14, lineHeight:1.65, color:'var(--text)' }}>
+          Your answers let me give advice that's actually made for <em>you</em>, not just generic tips. Ready?
         </p>
       </div>
 
