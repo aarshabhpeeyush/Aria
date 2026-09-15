@@ -22,7 +22,7 @@ export default function LoginPage() {
       else setDone(true)
     } else {
       const { error, data } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) { setError('Wrong email or password. Try again.'); return }
+      if (error) { setError('Wrong email or password. Try again.'); setLoading(false); return }
       const { data: prof } = await supabase.from('profiles').select('onboarded').eq('user_id', data.user.id).single()
       router.push(prof?.onboarded ? '/dashboard' : '/onboarding')
     }
