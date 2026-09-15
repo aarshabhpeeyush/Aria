@@ -1,15 +1,9 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) router.push('/dashboard')
-    })
-  }, [])
-
   const [mode, setMode] = useState('login') // 'login' | 'signup'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -27,9 +21,10 @@ export default function LoginPage() {
       if (error) setError(error.message)
       else setDone(true)
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) setError('Wrong email or password. Try again.')
-      else router.push('/dashboard')
+      const { error, data } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) { setError('Wrong email or password. Try again.'); return }
+      const { data: prof } = await supabase.from('profiles').select('onboarded').eq('user_id', data.user.id).single()
+      router.push(prof?.onboarded ? '/dashboard' : '/onboarding')
     }
     setLoading(false)
   }
