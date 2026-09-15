@@ -29,7 +29,7 @@ export default function Dashboard() {
       supabase.from('habit_logs').select('habit_id').eq('user_id', user.id).eq('completed_date', todayStr()),
     ])
 
-    if (!prof) { router.push('/onboarding'); return }
+    if (!prof || !prof.onboarded) { router.replace('/onboarding'); return }
     setProfile(prof)
     const completedToday = new Set((logs || []).map(l => l.habit_id))
     setHabits((hab || []).map(h => ({ ...h, done_today: completedToday.has(h.id) })))

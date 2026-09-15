@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
@@ -46,6 +46,14 @@ export default function Onboarding() {
   const [otherVal, setOtherVal] = useState('')
   const [showOther, setShowOther] = useState(false)
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) { router.replace('/login'); return }
+      const { data: prof } = await supabase.from('profiles').select('onboarded').eq('user_id', user.id).single()
+      if (prof?.onboarded) router.replace('/dashboard')
+    })
+  }, [])
 
   const current = STEPS[step]
   const progress = step / (STEPS.length - 1)
@@ -152,7 +160,7 @@ export default function Onboarding() {
     const habits = makeHabits(data.goal)
     await supabase.from('habits').delete().eq('user_id', user.id)
     await supabase.from('habits').insert(habits.map(h => ({ ...h, user_id: user.id, streak: 0 })))
-    router.push('/dashboard')
+    router.replace('/dashboard')
   }
 
   return (
